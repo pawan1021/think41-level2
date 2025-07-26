@@ -2,7 +2,7 @@ import os
 import requests
 
 def generate_response(prompt: str) -> str:
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    GROQ_API_KEY = os.getenv("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")
     if not GROQ_API_KEY:
         return "LLM API key is missing."
 
