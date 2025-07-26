@@ -1,17 +1,25 @@
+import os
 import requests
 
-def get_llm_response(prompt: str) -> str:
-    api_key = "YOUR_GROQ_API_KEY"
+def generate_response(prompt: str) -> str:
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    if not GROQ_API_KEY:
+        return "LLM API key is missing."
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
-        "Authorization": f"Bearer {api_key}",
+        "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
     payload = {
+        "model": "mixtral-8x7b-32768",
         "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
         ],
-        "model": "llama3-70b-8192"
+        "temperature": 0.7
     }
 
-    response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-    return response.json()["choices"][0]["message"]["content"]
+    response = requests.post(url, headers=headers, json=payload)
+    result = response.json()
+    return result['choices'][0]['message']['content']
